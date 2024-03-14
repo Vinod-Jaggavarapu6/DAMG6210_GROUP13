@@ -1,0 +1,143 @@
+DROP TABLE SERVICE_REQUESTS;
+DROP TABLE PAYMENTS;
+DROP TABLE LEASE_UNITS;
+DROP TABLE UNITS;
+DROP TABLE LEASES;
+DROP TABLE CUSTOMERS;
+DROP TABLE WAREHOUSE_EMPLOYEES;
+DROP TABLE WAREHOUSES;
+DROP TABLE WAREHOUSE_OWNERS;
+DROP TABLE WAREHOUSE_TYPES;
+DROP TABLE LOCATION;
+
+
+CREATE TABLE CUSTOMERS (
+    Customer_ID VARCHAR2(50) DEFAULT Customer_ID_SEQ.NEXTVAL,   
+    First_Name VARCHAR2(50),
+    Last_Name VARCHAR2(50),
+    Customer_Address VARCHAR2(100),
+    Email VARCHAR2(50),
+    Phone VARCHAR2(10),
+    CONSTRAINT C_Customer_ID_PK PRIMARY KEY (Customer_ID),
+    CONSTRAINT C_Customer_Email_UNIQUE UNIQUE (Email),
+    CONSTRAINT C_Customer_Email_CHECK CHECK (Email LIKE '%_@__%.__%'),
+    CONSTRAINT C_Customer_Phone_CHECK CHECK (LENGTH(Phone) = 10) 
+);
+
+CREATE TABLE LOCATION (
+    Location_ID VARCHAR2(50) DEFAULT Location_ID_SEQ.NEXTVAL,
+    ZIP VARCHAR2(5),
+    City VARCHAR2(50),
+    State VARCHAR2(25),
+    Country VARCHAR2(50),
+    CONSTRAINT C_Location_ID_PK PRIMARY KEY (Location_ID)
+);
+
+CREATE TABLE WAREHOUSE_TYPES (
+    Warehouse_Type_ID VARCHAR2(50) DEFAULT Warehouse_Type_ID_SEQ.NEXTVAL,
+    Type_Name VARCHAR2(50),
+    Monthly_Rate NUMBER(10, 2),
+    CONSTRAINT C_Warehouse_Type_ID_PK PRIMARY KEY (Warehouse_Type_ID)
+);
+
+CREATE TABLE WAREHOUSE_OWNERS (
+    Owner_ID VARCHAR2(50) DEFAULT Owner_ID_SEQ.NEXTVAL,
+    Owner_Name VARCHAR2(100),
+    Owner_Address VARCHAR2(100),
+    Email VARCHAR2(50),
+    Phone VARCHAR2(15),
+    CONSTRAINT C_Owner_ID_PK PRIMARY KEY (Owner_ID),
+    CONSTRAINT C_Owner_Email_UNIQUE UNIQUE (Email),
+    CONSTRAINT C_Owner_Email_CHECK CHECK (Email LIKE '%_@__%.__%')
+);
+
+CREATE TABLE WAREHOUSES (
+    Warehouse_ID VARCHAR2(50) DEFAULT Warehouse_ID_SEQ.NEXTVAL,
+    Name VARCHAR2(50),
+    Address VARCHAR2(100),
+    Available_Space NUMBER(5),
+    Warehouse_Type_ID VARCHAR2(50),
+    Location_ID VARCHAR2(50),
+    Owner_ID VARCHAR2(50),
+    Location_LAT DECIMAL(8, 6),
+    Location_LONG DECIMAL(9, 6),
+    CONSTRAINT C_Warehouse_ID_PK PRIMARY KEY (Warehouse_ID),
+    CONSTRAINT C_Warehouse_WarehouseType_ID_FK FOREIGN KEY (Warehouse_Type_ID) REFERENCES WAREHOUSE_TYPES(Warehouse_Type_ID),
+    CONSTRAINT C_Warehouse_Location_ID_FK FOREIGN KEY (Location_ID) REFERENCES LOCATION(Location_ID),
+    CONSTRAINT C_Warehouse_Owner_ID_FK FOREIGN KEY (Owner_ID) REFERENCES  WAREHOUSE_OWNERS(Owner_ID)
+);
+
+CREATE TABLE WAREHOUSE_EMPLOYEES (
+    Employee_ID VARCHAR2(50) DEFAULT Employee_ID_SEQ.NEXTVAL,
+    Warehouse_ID VARCHAR2(50),
+    Employee_Name VARCHAR2(100),
+    Address VARCHAR2(100),
+    Email VARCHAR2(50),
+    Phone VARCHAR2(15),
+    Role VARCHAR2(20),
+    Salary NUMBER(8, 2),
+    CONSTRAINT C_Employee_ID_PK PRIMARY KEY (Employee_ID),
+    CONSTRAINT C_Employee_Warehouse_ID_FK FOREIGN KEY (Warehouse_ID) REFERENCES WAREHOUSES(Warehouse_ID),
+    CONSTRAINT C_Employee_Email_UNIQUE UNIQUE (Email),
+    CONSTRAINT C_Employee_Email_CHECK CHECK (Email LIKE '%_@__%.__%')
+);
+
+CREATE TABLE UNITS (
+    Unit_ID VARCHAR2(50) DEFAULT Unit_ID_SEQ.NEXTVAL,
+    Warehouse_ID VARCHAR2(50),
+    Availability_Status VARCHAR2(2),
+    CONSTRAINT C_Unit_ID_PK PRIMARY KEY (Unit_ID),
+    CONSTRAINT C_Unit_Availability_Status_CHECK CHECK (Availability_Status IN ('A', 'NA')),
+    CONSTRAINT C_Unit_Warehouse_ID_FK FOREIGN KEY (Warehouse_ID) REFERENCES WAREHOUSES(Warehouse_ID)
+);
+
+CREATE TABLE LEASES (
+    Lease_ID VARCHAR2(50) DEFAULT Lease_ID_SEQ.NEXTVAL,
+    Warehouse_ID VARCHAR2(50),
+    Customer_ID VARCHAR2(50),
+    Start_Date DATE,
+    End_Date DATE,
+    Lease_Amount NUMBER(10, 2),
+    Due_Date DATE,
+    Payment_Status VARCHAR2(10),
+    Balance_Amount NUMBER(10, 2),
+    Units_leased NUMBER(5),
+    CONSTRAINT C_Lease_ID_PK PRIMARY KEY (Lease_ID),
+    CONSTRAINT C_Lease_Warehouse_ID_FK FOREIGN KEY (Warehouse_ID) REFERENCES WAREHOUSES(Warehouse_ID),
+    CONSTRAINT C_Lease_Customer_ID_FK FOREIGN KEY (Customer_ID) REFERENCES CUSTOMERS(Customer_ID),
+    CONSTRAINT C_Lease_Payment_Status_CHECK CHECK (Payment_Status IN ('PAID', 'UNPAID', 'PARTIAL'))
+);
+
+CREATE TABLE LEASE_UNITS (
+    Lease_Unit_ID VARCHAR2(100) DEFAULT Lease_Unit_ID_SEQ.NEXTVAL,
+    Unit_ID VARCHAR2(50),
+    Lease_ID VARCHAR2(50),
+    CONSTRAINT C_Lease_Unit_PK PRIMARY KEY (Lease_Unit_ID),
+    CONSTRAINT C_Lease_Unit_Unit_ID_FK FOREIGN KEY (Unit_ID) REFERENCES UNITS(Unit_ID),
+    CONSTRAINT C_Lease_Unit_Lease_ID_FK FOREIGN KEY (Lease_ID) REFERENCES LEASES(Lease_ID)
+);
+
+
+
+CREATE TABLE PAYMENTS (
+    Payment_ID VARCHAR2(50) DEFAULT Payment_ID_SEQ.NEXTVAL,
+    Lease_ID VARCHAR2(50),
+    Transaction_Date DATE,
+    Payment_Mode VARCHAR2(50),
+    Transaction_Amount NUMBER(10, 2),
+    CONSTRAINT C_Payment_ID_PK PRIMARY KEY (Payment_ID),
+    CONSTRAINT C_Payment_Payment_Mode_CHECK CHECK (Payment_Mode IN ('CASH', 'CHECK', 'CARD')),
+    CONSTRAINT C_Payment_Lease_ID_FK FOREIGN KEY (Lease_ID) REFERENCES LEASES(Lease_ID)
+);
+
+CREATE TABLE SERVICE_REQUESTS (
+    Request_ID VARCHAR2(50) DEFAULT Service_Request_ID_SEQ.NEXTVAL,
+    Lease_Unit_ID VARCHAR2(50),
+    Request_Desc VARCHAR2(250),
+    Request_Date DATE,
+    Request_Status VARCHAR2(50),
+    Customer_ID VARCHAR2(50),
+    CONSTRAINT C_Service_Request_ID_PK PRIMARY KEY (Request_ID),
+    CONSTRAINT C_Service_Request_Customer_ID_FK FOREIGN KEY (Customer_ID) REFERENCES CUSTOMERS(Customer_ID)
+);
+
