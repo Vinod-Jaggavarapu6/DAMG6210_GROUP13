@@ -100,49 +100,49 @@ INSERT INTO WAREHOUSE_OWNER (Owner_Name, Owner_Address, Email, Phone)
 VALUES ('Christopher Lee', '159 Birch St, Somewhere, USA', 'christopher.lee@example.com', '3434343434');
 
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE A', '123 Main St, Anytown, USA', 10, 1, 1, 1, 40.7128, -74.0060);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE B', '456 Elm St, Othertown, USA', 5, 2, 2, 2, 34.0522, -118.2437);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE C', '789 Oak St, Somewhere, USA', 2, 3, 3, 3, 29.7604, -95.3698);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE D', '321 Pine St, Nowhere, USA', 25, 4, 4, 4, 41.8781, -87.6298);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE E', '654 Maple St, Anytown, USA', 3, 5, 5, 5, 37.7749, -122.4194);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE F', '987 Cedar St, Othertown, USA', 35, 6, 6, 6, 33.4484, -112.0740);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE G', '159 Birch St, Somewhere, USA', 4, 1, 7, 1, 32.7157, -117.1611);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE H', '111 Oak St, Nowhere, USA', 4, 2, 8, 2, 34.0522, -118.2437);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE I', '222 Elm St, Anytown, USA', 5, 3, 9, 3, 40.7128, -74.0060);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE J', '333 Pine St, Othertown, USA', 5, 4, 10, 4, 34.0522, -118.2437);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE K', '444 Oak St, Somewhere, USA', 6, 5, 1, 5, 29.7604, -95.3698);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE L', '555 Cedar St, Nowhere, USA', 6, 6, 2, 6, 41.8781, -87.6298);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE M', '666 Maple St, Anytown, USA', 10, 1, 3, 7, 37.7749, -122.4194);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE N', '777 Birch St, Othertown, USA', 7, 2, 4, 1, 33.4484, -112.0740);
 
-INSERT INTO WAREHOUSE (Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
+INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
 VALUES ('WAREHOUSE O', '888 Pine St, Somewhere, USA', 8, 3, 5, 7, 37.7749, -122.4194);
 
 
@@ -256,7 +256,7 @@ VALUES ('9', '9', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YY
 INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
 VALUES ('10', '10', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 4800.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 4800.00, 3);
 
-INSERT INTO PAYMENTS (Lease_ID, Transaction_Date, Payment_Mode, Transaction_Amount)
+INSERT INTO PAYMENT (Lease_ID, Transaction_Date, Payment_Mode, Transaction_Amount)
 SELECT
     l.Lease_ID,
     SYSDATE, -- Assuming current date as the transaction date
@@ -268,7 +268,7 @@ WHERE
     l.Payment_Status IN ('UNPAID', 'PARTIAL') AND ROWNUM <= 5;
     
 
-INSERT INTO SERVICE_REQUESTS (Lease_Unit_ID, Request_Desc, Request_Date, Request_Status, Customer_ID)
+INSERT INTO SERVICE_REQUEST (Lease_Unit_ID, Request_Desc, Request_Date, Request_Status, Customer_ID)
 SELECT
     lu.Lease_Unit_ID,
     'Request description for Lease Unit ' || lu.Lease_Unit_ID,
@@ -276,9 +276,9 @@ SELECT
     'OPEN', -- Initial request status
     c.Customer_ID
 FROM
-    LEASE_UNITS lu
-INNER JOIN LEASES l ON lu.Lease_ID = l.Lease_ID
-INNER JOIN CUSTOMERS c ON l.Customer_ID = c.Customer_ID
+    LEASE_UNIT lu
+INNER JOIN LEASE l ON lu.Lease_ID = l.Lease_ID
+INNER JOIN CUSTOMER c ON l.Customer_ID = c.Customer_ID
 WHERE
     ROWNUM <= 5; -- Inserting requests for the first 5 lease units
 
