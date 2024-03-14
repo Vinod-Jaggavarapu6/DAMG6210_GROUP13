@@ -37,3 +37,16 @@ ORDER BY Total_Revenue DESC;
 
 
 SELECT * FROM Owners_Revenue_By_Location;
+
+-- Payment Summary view 
+
+CREATE OR REPLACE VIEW Payment_Summary_View AS
+SELECT * 
+FROM PAYMENT p
+JOIN 
+    LEASE l ON p.Lease_ID = l.Lease_ID
+JOIN 
+    CUSTOMER c ON c.Customer_ID = l.Customer_ID;
+
+
+SELECT * FROM Payment_Summary_View;
