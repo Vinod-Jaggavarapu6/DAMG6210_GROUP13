@@ -12,4 +12,7 @@ BEGIN
         VALUES (Unit_ID_SEQ.NEXTVAL, :new.Warehouse_ID, 'A');
     END LOOP;
 END;
+
 /
+
+
