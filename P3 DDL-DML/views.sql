@@ -50,3 +50,12 @@ JOIN
 
 
 SELECT * FROM Payment_Summary_View;
+
+-- Service Request View
+CREATE OR REPLACE VIEW service_request_status_warehouse_view AS
+SELECT r.Request_ID,w.Warehouse_ID,r.Request_Desc,r.Request_Date,r.Request_Status
+FROM SERVICE_REQUEST r JOIN LEASE_UNIT l1 ON r.Lease_Unit_ID = l1.Lease_Unit_ID
+JOIN LEASE l2 ON l1.Lease_ID = l2.Lease_ID
+JOIN WAREHOUSE w ON l2.Warehouse_ID = w.Warehouse_ID;
+
+select * from service_request_status_warehouse_view;
