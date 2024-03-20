@@ -140,10 +140,10 @@ INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_
 VALUES ('WAREHOUSE M', '666 Maple St, Anytown, USA', 10, 1, 3, 7, 37.7749, -122.4194);
 
 INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
-VALUES ('WAREHOUSE N', '777 Birch St, Othertown, USA', 7, 2, 4, 1, 33.4484, -112.0740);
+VALUES ('WAREHOUSE N', '777 Birch St, Othertown, USA', 17, 2, 4, 1, 33.4484, -112.0740);
 
 INSERT INTO WAREHOUSE (Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG) 
-VALUES ('WAREHOUSE O', '888 Pine St, Somewhere, USA', 8, 3, 5, 7, 37.7749, -122.4194);
+VALUES ('WAREHOUSE O', '888 Pine St, Somewhere, USA', 18, 3, 5, 7, 37.7749, -122.4194);
 
 
 -- Warehouse A Employees
@@ -216,57 +216,61 @@ VALUES ('10', 'Oliver Wilson', '147 Walnut St, Nowhen, USA', 'oliver.wilson@exam
 INSERT INTO WAREHOUSE_EMPLOYEE (Warehouse_ID, Employee_Name, Address, Email, Phone, Role, Salary) 
 VALUES ('10', 'Charlotte White', '147 Walnut St, Nowhen, USA', 'charlotte.white@example.com', '1234567809', 'Assistant Manager', 48000.00);
 
--- Lease for Warehouse A, Customer John Doe
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('1', '1', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 3000.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 3000.00, 3);
+-- SET SERVEROUTPUT ON
+-- /
+-- DECLARE
+--     v_result VARCHAR2(100);
+--     v_warehouse_id VARCHAR2(50);
+--     v_lease_amount NUMBER;
+-- BEGIN
+--     -- Call the function and store the result
+--     v_result := calculate_lease_amount(
+--                     p_start_date => TO_DATE('2024-01-08', 'YYYY-MM-DD'),
+--                     p_end_date => TO_DATE('2024-12-29', 'YYYY-MM-DD'),
+--                     p_zip_code => '78901',
+--                     p_required_units => 4,
+--                     p_warehouse_type => 'Dry Storage'
+--                 );
 
--- Lease for Warehouse B, Customer Alice Smith
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('2', '2', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 4500.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 4500.00, 2);
+--     v_warehouse_id := SUBSTR(v_result, 1, INSTR(v_result, ',') - 1);
+--     v_lease_amount := TO_NUMBER(SUBSTR(v_result, INSTR(v_result, ',') + 1));
 
--- Lease for Warehouse C, Customer Bob Johnson
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('3', '3', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 2400.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 2400.00, 1);
+--     DBMS_OUTPUT.PUT_LINE('Warehouse ID: ' || v_warehouse_id);
+--     DBMS_OUTPUT.PUT_LINE('Lease Amount: ' || v_lease_amount);
+  
+-- END;
+-- /
 
--- Lease for Warehouse D, Customer Emily Brown
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('4', '4', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 6250.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 6250.00, 5);
+INSERT INTO LEASE (WAREHOUSE_ID,CUSTOMER_ID,START_DATE,END_DATE,LEASE_AMOUNT,Balance_Amount,UNITS_LEASED)
+VALUES (1,1,TO_DATE('2024-03-14', 'YYYY-MM-DD'),TO_DATE('2024-06-14', 'YYYY-MM-DD'),15000.00,15000.00,5);
 
--- Lease for Warehouse E, Customer Michael Wilson
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('5', '5', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 5400.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 5400.00, 1);
+INSERT INTO LEASE (WAREHOUSE_ID,CUSTOMER_ID,START_DATE,END_DATE,LEASE_AMOUNT,Balance_Amount,UNITS_LEASED)
+VALUES (2,2,TO_DATE('2024-03-14', 'YYYY-MM-DD'),TO_DATE('2024-06-14', 'YYYY-MM-DD'),9000.00,9000.00,2);
 
--- Lease for Warehouse F, Customer Sophia Martinez
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('6', '6', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 6300.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 6300.00, 6);
+INSERT INTO LEASE (WAREHOUSE_ID,CUSTOMER_ID,START_DATE,END_DATE,LEASE_AMOUNT,Balance_Amount,UNITS_LEASED)
+VALUES (2,1,TO_DATE('2024-03-14', 'YYYY-MM-DD'),TO_DATE('2024-06-14', 'YYYY-MM-DD'),4500,4500,1);
 
--- Lease for Warehouse G, Customer William Taylor
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('7', '7', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 2800.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 2800.00, 2);
+INSERT INTO LEASE (WAREHOUSE_ID,CUSTOMER_ID,START_DATE,END_DATE,LEASE_AMOUNT,Balance_Amount,UNITS_LEASED)
+VALUES (4,6,TO_DATE('2024-03-11', 'YYYY-MM-DD'),TO_DATE('2024-09-23', 'YYYY-MM-DD'),191612.85,191612.85,15);
 
--- Lease for Warehouse H, Customer Emma Anderson
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('8', '8', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 3000.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 3000.00, 3);
+INSERT INTO LEASE (WAREHOUSE_ID,CUSTOMER_ID,START_DATE,END_DATE,LEASE_AMOUNT,Balance_Amount,UNITS_LEASED)
+VALUES (7,1,TO_DATE('2024-01-08', 'YYYY-MM-DD'),TO_DATE('2024-12-29', 'YYYY-MM-DD'),46709.68,46709.68,4);
 
--- Lease for Warehouse I, Customer James Hernandez
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('9', '9', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 6000.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 6000.00, 4);
+BEGIN
+    process_payment(1, SYSDATE, 'CASH', 5000.00);
+    process_payment(2, SYSDATE, 'CARD', 500.00);
+    process_payment(2, SYSDATE, 'CASH', 6000.00);
+    process_payment(4, SYSDATE, 'CASH', 1000.00);
+    process_payment(5, SYSDATE, 'CASH', 1000.00);
+    process_payment(5, SYSDATE, 'CARD', 1250.00);
+    process_payment(5, SYSDATE, 'CHEQUE', 1000.00);
+    process_payment(5, SYSDATE, 'CHEQUE', 1500.00);
+    process_payment(1, SYSDATE, 'CASH', 1200.00);
+    process_payment(1, SYSDATE, 'CARD', 2000.00);
+END;
+/
 
--- Lease for Warehouse J, Customer Olivia Garcia
-INSERT INTO LEASE (Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount, Due_Date, Payment_Status, Balance_Amount, Units_leased)
-VALUES ('10', '10', TO_DATE('2024-03-14', 'YYYY-MM-DD'), TO_DATE('2024-06-14', 'YYYY-MM-DD'), 4800.00, TO_DATE('2024-04-01', 'YYYY-MM-DD'), 'UNPAID', 4800.00, 3);
 
-INSERT INTO PAYMENT (Lease_ID, Transaction_Date, Payment_Mode, Transaction_Amount)
-SELECT
-    l.Lease_ID,
-    SYSDATE, -- Assuming current date as the transaction date
-    'CARD',
-    l.Balance_Amount -- Payment amount equals the balance amount
-FROM
-    LEASE l
-WHERE
-    l.Payment_Status IN ('UNPAID', 'PARTIAL') AND ROWNUM <= 5;
-    
 
 INSERT INTO SERVICE_REQUEST (Lease_Unit_ID, Request_Desc, Request_Date, Request_Status, Customer_ID)
 SELECT
