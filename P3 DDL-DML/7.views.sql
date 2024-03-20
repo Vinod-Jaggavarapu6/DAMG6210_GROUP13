@@ -50,3 +50,31 @@ JOIN
     LEASE l ON p.Lease_ID = l.Lease_ID
 JOIN 
     CUSTOMER c ON c.Customer_ID = l.Customer_ID;
+
+-- Customer Lease Details view
+ 
+CREATE VIEW customer_lease_details_view AS
+    SELECT
+        c.customer_id,
+        c.first_name
+        || ' '
+        || c.last_name   AS customer_name,
+        l.lease_id,
+        w.warehouse_name AS warehouse_name,
+        w.address        AS warehouse_address,
+        l.start_date,
+        l.end_date,
+        l.lease_amount,
+        l.payment_status,
+        l.balance_amount
+    FROM
+             lease l
+        INNER JOIN warehouse w ON l.warehouse_id = w.warehouse_id
+        INNER JOIN customer  c ON l.customer_id = c.customer_id
+    ORDER BY
+        customer_id;
+ 
+SELECT
+    *
+FROM
+    customer_lease_details;
