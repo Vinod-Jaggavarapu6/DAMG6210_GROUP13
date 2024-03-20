@@ -20,9 +20,11 @@ BEGIN
         dbms_output.put_line('Table CUSTOMER created successfully.');
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table CUSTOMER already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
     END;
 
     BEGIN
@@ -37,9 +39,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-           dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table LOCATION already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
     END;
 
     BEGIN
@@ -51,9 +55,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-           dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table WAREHOUSE_TYPE already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
     END;
 
     BEGIN
@@ -70,9 +76,11 @@ BEGIN
     
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-           dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table WAREHOUSE_OWNER already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
             
     END;
 
@@ -94,9 +102,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table WAREHOUSE already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
     END;
     
     BEGIN 
@@ -117,9 +127,11 @@ BEGIN
 
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table WAREHOUSE_EMPLOYEE already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
             
     END;
 
@@ -134,9 +146,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table UNIT already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
             
     END;
 
@@ -159,9 +173,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table LEASE already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
             
     END;
     
@@ -176,9 +192,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table LEASE_UNIT already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
             
     END;
     
@@ -195,9 +213,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table PAYMENT already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
             
     END;
     
@@ -216,9 +236,11 @@ BEGIN
         )';
     EXCEPTION
         WHEN OTHERS THEN
-            e_code := SQLCODE;
-            e_msg := SQLERRM;
-            dbms_output.put_line(e_msg);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Table SERVICE_REQUEST already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
     END;
 
 END;
