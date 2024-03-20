@@ -53,7 +53,7 @@ JOIN
 
 -- Customer Lease Details view
  
-CREATE VIEW customer_lease_details_view AS
+CREATE OR REPLACE VIEW customer_lease_details_view AS
     SELECT
         c.customer_id,
         c.first_name
@@ -77,7 +77,7 @@ CREATE VIEW customer_lease_details_view AS
 SELECT
     *
 FROM
-    customer_lease_details;
+    customer_lease_details_view;
 
 -- Service Request View
 CREATE OR REPLACE VIEW service_request_status_warehouse_view AS
@@ -87,3 +87,4 @@ JOIN LEASE l2 ON l1.Lease_ID = l2.Lease_ID
 JOIN WAREHOUSE w ON l2.Warehouse_ID = w.Warehouse_ID;
  
 select * from service_request_status_warehouse_view;
+    
