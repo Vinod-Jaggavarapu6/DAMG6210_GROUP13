@@ -1,24 +1,25 @@
 SET SERVEROUTPUT ON;
-
+ 
 CREATE OR REPLACE PROCEDURE create_sequence(seqName IN VARCHAR2, startWith IN NUMBER) AS
 BEGIN
    -- Check if sequence exists
    FOR seq IN (SELECT sequence_name FROM all_sequences WHERE sequence_name = seqName) LOOP
-      -- If sequence exists, return without creating it
-      dbms_output.put_line('Sequence : ' || seqName || ' already exists');
       RETURN;
    END LOOP;
-
+ 
    -- Create sequence if it doesn't exist
-   dbms_output.put_line('Creating the Sequence: ' || seqName);
    EXECUTE IMMEDIATE 'CREATE SEQUENCE ' || seqName || ' INCREMENT BY 1 START WITH ' || startWith;
+   dbms_output.put_line(seqName || 'created' );
 EXCEPTION
    WHEN OTHERS THEN
-      dbms_output.put_line('Exception Occurred');
-      dbms_output.put_line('Error Message: ' || SQLERRM);
+        IF SQLCODE = -955 THEN
+            dbms_output.put_line('Sequence ' ||seqName||'  already exists.');
+        ELSE
+            dbms_output.put_line(SQLERRM);
+        END IF;
 END create_sequence;
 /
-
+ 
 BEGIN
    create_sequence('Customer_ID_SEQ', 1);
    create_sequence('Location_ID_SEQ', 1);
