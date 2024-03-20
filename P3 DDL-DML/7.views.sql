@@ -123,3 +123,27 @@ WHERE
     
     
 SELECT * FROM Lease_Units_Available;
+
+Warehouse Availability by Location View
+
+CREATE OR REPLACE VIEW warehouse_availability_by_location AS
+   SELECT DISTINCT
+       loc.zip,
+       w.warehouse_id,
+       w.warehouse_name AS warehouse_name,
+       w.address        AS warehouse_address,
+       u.unit_id,
+       CASE
+           WHEN u.availability_status = 'NA' THEN
+               'Available'
+           ELSE
+               'Occupied'
+       END              AS occupancy_status
+   FROM
+            warehouse w
+       INNER JOIN location loc ON w.location_id = loc.location_id
+       INNER JOIN unit     u ON w.warehouse_id = u.warehouse_id;
+SELECT
+   *
+FROM
+   warehouse_availability_by_location;
