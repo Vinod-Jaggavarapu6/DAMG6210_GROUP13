@@ -252,3 +252,10 @@ BEGIN
     COMMIT;
 END;
 /
+
+-- BEGIN
+--     FOR t IN (SELECT table_name FROM all_tables WHERE owner = 'WAREHOUSE_APP_ADMIN_USER') LOOP
+--         EXECUTE IMMEDIATE 'GRANT ALL PRIVILEGES ON WAREHOUSE_APP_ADMIN_USER.' || t.table_name || ' TO WAREHOUSE_APP_ADMIN_USER';
+--     END LOOP;
+-- END;
+-- /

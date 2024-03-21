@@ -1,8 +1,9 @@
 -- view for warehouse owners and their revenue by location and total units available
-CREATE OR REPLACE VIEW Owners_Revenue_By_Location AS
+CREATE OR REPLACE VIEW Owners_Revenue_By_Warehouse AS
 SELECT
     o.Owner_ID,
     o.Owner_Name,
+    w.warehouse_id,
     w.warehouse_name,
     lt.type_name,
     loc.City,
@@ -26,6 +27,7 @@ JOIN
 GROUP BY
     o.Owner_ID,
     o.Owner_Name,
+    w.warehouse_id,
     w.warehouse_name,
     lt.type_name,
     loc.City,
@@ -73,25 +75,23 @@ CREATE OR REPLACE VIEW customer_lease_details_view AS
         INNER JOIN customer  c ON l.customer_id = c.customer_id
     ORDER BY
         customer_id;
- 
-SELECT
-    *
-FROM
-    customer_lease_details_view;
+
 
 -- Service Request View
 CREATE OR REPLACE VIEW service_request_status_warehouse_view AS
-SELECT r.Request_ID,w.Warehouse_ID,r.Request_Desc,r.Request_Date,r.Request_Status
-FROM SERVICE_REQUEST r JOIN LEASE_UNIT l1 ON r.Lease_Unit_ID = l1.Lease_Unit_ID
+SELECT r.Request_ID,w.Warehouse_ID,w.Warehouse_Name,l1.unit_id as unit_fault,r.Request_Desc,r.Request_Date,r.Request_Status,c.customer_id,c.First_Name||' '||c.Last_Name as Customer_Name,c.email,c.phone
+FROM SERVICE_REQUEST r 
+JOIN LEASE_UNIT l1 ON r.Lease_Unit_ID = l1.Lease_Unit_ID
 JOIN LEASE l2 ON l1.Lease_ID = l2.Lease_ID
-JOIN WAREHOUSE w ON l2.Warehouse_ID = w.Warehouse_ID;
+JOIN WAREHOUSE w ON l2.Warehouse_ID = w.Warehouse_ID
+JOIN CUSTOMER c ON l2.Customer_ID = c.Customer_ID
+ORDER BY r.Request_Date DESC
+;
  
-select * from service_request_status_warehouse_view;
-    
 
 -- Lease Units Available/Status View
  
-CREATE OR REPLACE VIEW Lease_Units_Available AS
+CREATE OR REPLACE VIEW Lease_Units_Availability_Status AS
 SELECT
     W.WAREHOUSE_ID,
     W.WAREHOUSE_NAME,
@@ -121,10 +121,8 @@ LEFT JOIN
 WHERE
     L.END_DATE IS NULL OR L.END_DATE > SYSDATE;
     
-    
-SELECT * FROM Lease_Units_Available;
 
-Warehouse Availability by Location View
+--Warehouse Availability by Location View
 
 CREATE OR REPLACE VIEW warehouse_availability_by_location AS
    SELECT DISTINCT
@@ -134,16 +132,16 @@ CREATE OR REPLACE VIEW warehouse_availability_by_location AS
        w.address        AS warehouse_address,
        u.unit_id,
        CASE
-           WHEN u.availability_status = 'NA' THEN
+           WHEN u.availability_status = 'A' THEN
                'Available'
            ELSE
                'Occupied'
-       END              AS occupancy_status
+       END              AS occupancy_status,
+         wt.type_name     AS warehouse_type,
+         wt.monthly_rate  AS monthly_unit_rate
    FROM
             warehouse w
        INNER JOIN location loc ON w.location_id = loc.location_id
-       INNER JOIN unit     u ON w.warehouse_id = u.warehouse_id;
-SELECT
-   *
-FROM
-   warehouse_availability_by_location;
+       INNER JOIN unit     u ON w.warehouse_id = u.warehouse_id
+       INNER JOIN warehouse_type wt ON w.warehouse_type_id = wt.warehouse_type_id;
+    
