@@ -37,7 +37,7 @@ GROUP BY
 ORDER BY Total_Revenue DESC;
 
 
--- Payment Summary view 
+-- Paymnet Summary View 
 
 CREATE OR REPLACE VIEW Payment_Summary_View AS
 SELECT 
@@ -52,6 +52,7 @@ JOIN
     LEASE l ON p.Lease_ID = l.Lease_ID
 JOIN 
     CUSTOMER c ON c.Customer_ID = l.Customer_ID;
+
 
 -- Customer Lease Details view
  
@@ -78,6 +79,7 @@ CREATE OR REPLACE VIEW customer_lease_details_view AS
 
 
 -- Service Request View
+
 CREATE OR REPLACE VIEW service_request_status_warehouse_view AS
 SELECT r.Request_ID,w.Warehouse_ID,w.Warehouse_Name,l1.unit_id as unit_fault,r.Request_Desc,r.Request_Date,r.Request_Status,c.customer_id,c.First_Name||' '||c.Last_Name as Customer_Name,c.email,c.phone
 FROM SERVICE_REQUEST r 
