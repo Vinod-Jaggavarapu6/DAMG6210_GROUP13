@@ -2,7 +2,7 @@ PURGE RECYCLEBIN;
 SET SERVEROUTPUT ON;
 
 
--- Trigger to insert units into the UNIT table after a warehouse is created
+-- Trigger to insert units (based on warehouse space provided when creating a new warehouse) into the UNIT table after a warehouse is created
 
 CREATE OR REPLACE TRIGGER insert_warehouse_units_trigger
 AFTER INSERT ON WAREHOUSE
@@ -15,13 +15,14 @@ BEGIN
 
     FOR i IN 1..num_units LOOP
         INSERT INTO UNIT (Unit_ID, Warehouse_ID, Availability_Status)
-        VALUES (Unit_ID_SEQ.NEXTVAL, :new.Warehouse_ID, 'A');
+        VALUES (Unit_ID_SEQ.NEXTVAL, :new.Warehouse_ID, 'A'); -- A for available (default status)
     END LOOP;
 END;
 
 /
 
 
+-- Procedure to update warehouse's available space and units' availability status  and inserting into lease_units after a lease is created
 
 CREATE OR REPLACE PROCEDURE update_lease_information(
     p_warehouse_id IN VARCHAR2,
@@ -33,8 +34,8 @@ CREATE OR REPLACE PROCEDURE update_lease_information(
         FROM UNIT
         WHERE WAREHOUSE_ID = p_warehouse_id
         AND AVAILABILITY_STATUS = 'A'
-        AND ROWNUM <= p_units_leased;
-    l_unit_id UNIT.UNIT_ID%TYPE;
+        AND ROWNUM <= p_units_leased; -- cursor to select available units for lease
+    l_unit_id UNIT.UNIT_ID%TYPE; 
 BEGIN
     -- Update warehouse's available space
     UPDATE WAREHOUSE
@@ -58,16 +59,14 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('Inserted Lease_Unit record for Unit_ID: ' || l_unit_id);
         EXCEPTION
             WHEN OTHERS THEN
-                -- Handle exceptions (e.g., rollback changes, log errors)
+                ROLLBACK;
                 DBMS_OUTPUT.PUT_LINE('Error processing unit ' || unit_rec.UNIT_ID || ': ' || SQLERRM);
-                -- You can add additional error handling logic here
         END;
     END LOOP;
 END;
 /
 
 -- Trigger to update the available space in the warehouse after a lease is created
-
 CREATE OR REPLACE TRIGGER insert_lease_units
 AFTER INSERT ON LEASE
 FOR EACH ROW
@@ -77,6 +76,7 @@ BEGIN
 END;
 /
 
+-- Function to calculate the lease amount based on customer requirements and warehouse availability
 CREATE OR REPLACE FUNCTION calculate_lease_amount(
     p_start_date IN DATE,
     p_end_date IN DATE,
@@ -115,7 +115,7 @@ BEGIN
     
     IF v_months < 1 THEN
         v_months := 1;
-    END IF;
+    END IF; -- Minimum lease period is 1 month (business rule)
     
     DBMS_OUTPUT.PUT_LINE('v_months: ' || v_months);
     DBMS_OUTPUT.PUT_LINE('v_monthly_rate: ' || v_monthly_rate);
@@ -127,6 +127,45 @@ BEGIN
 END calculate_lease_amount;
 /
 
+-- Procedure to process payment and update payment status and balance amount in the LEASE table
+-- CREATE OR REPLACE PROCEDURE process_payment(
+--     p_lease_id IN VARCHAR2,
+--     p_transaction_date IN TIMESTAMP,
+--     p_payment_mode IN VARCHAR2,
+--     p_transaction_amount IN NUMBER
+-- ) AS
+--     v_balance_amount NUMBER;
+-- BEGIN
+--     -- Updating payment status and balance amount in the LEASE table
+--     SELECT Balance_Amount - p_transaction_amount INTO v_balance_amount
+--     FROM LEASE
+--     WHERE Lease_ID = p_lease_id;
+
+--     IF v_balance_amount < 0 THEN
+--         v_balance_amount := 0;
+--     END IF;
+--     DBMS_OUTPUT.PUT_LINE('v_balance_amount: ' || v_balance_amount);
+--     UPDATE LEASE
+--     SET Payment_Status = CASE
+--                             WHEN v_balance_amount = 0 THEN 'PAID'
+--                             ELSE 'PARTIAL'
+--                          END,
+--         Balance_Amount = v_balance_amount
+--     WHERE Lease_ID = p_lease_id;
+
+--     -- Insert payment record into the PAYMENT table
+--     INSERT INTO PAYMENT (Lease_ID, Transaction_Date, Payment_Mode, Transaction_Amount)
+--     VALUES (p_lease_id, p_transaction_date, p_payment_mode, p_transaction_amount);
+
+--    COMMIT;
+-- EXCEPTION
+--     WHEN OTHERS THEN
+--         ROLLBACK;
+--         DBMS_OUTPUT.PUT_LINE('Error processing payment: ' || SQLERRM);
+-- END;
+-- /
+
+-- Procedure to process payment and update payment status and balance amount in the LEASE table
 CREATE OR REPLACE PROCEDURE process_payment(
     p_lease_id IN VARCHAR2,
     p_transaction_date IN TIMESTAMP,
@@ -135,15 +174,26 @@ CREATE OR REPLACE PROCEDURE process_payment(
 ) AS
     v_balance_amount NUMBER;
 BEGIN
-    -- Updating payment status and balance amount in the LEASE table
-    SELECT Balance_Amount - p_transaction_amount INTO v_balance_amount
+    -- Check if lease exists and if it's already paid in full
+    SELECT Balance_Amount INTO v_balance_amount
     FROM LEASE
     WHERE Lease_ID = p_lease_id;
 
-    IF v_balance_amount < 0 THEN
-        v_balance_amount := 0;
+    IF v_balance_amount <= 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Cannot process the paymnet as This lease'|| p_lease_id||' is already paid in full.');
+        RETURN;
     END IF;
-    DBMS_OUTPUT.PUT_LINE('v_balance_amount: ' || v_balance_amount);
+
+    -- Calculate new balance amount after payment
+    v_balance_amount := v_balance_amount - p_transaction_amount;
+
+    -- Check if the transaction amount exceeds the remaining balance
+    IF v_balance_amount < 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Cannot process the payment as the Transaction amount exceeds the remaining balance to be paid.');
+        RETURN;
+    END IF;
+
+    -- Update payment status and balance amount in the LEASE table
     UPDATE LEASE
     SET Payment_Status = CASE
                             WHEN v_balance_amount = 0 THEN 'PAID'
@@ -156,14 +206,19 @@ BEGIN
     INSERT INTO PAYMENT (Lease_ID, Transaction_Date, Payment_Mode, Transaction_Amount)
     VALUES (p_lease_id, p_transaction_date, p_payment_mode, p_transaction_amount);
 
-   COMMIT;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Payment processed successfully.');
 EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('No lease found with the given Lease_ID');
     WHEN OTHERS THEN
         ROLLBACK;
         DBMS_OUTPUT.PUT_LINE('Error processing payment: ' || SQLERRM);
 END;
 /
 
+-- Procedure to insert a customer record
 CREATE OR REPLACE PROCEDURE InsertCustomer (
     p_First_Name CUSTOMER.First_Name%TYPE,
     p_Last_Name CUSTOMER.Last_Name%TYPE,
@@ -189,6 +244,7 @@ EXCEPTION
 END InsertCustomer;
 /
 
+-- Procedure to insert a location record
 CREATE OR REPLACE PROCEDURE InsertLocation (
     p_ZIP LOCATION.ZIP%TYPE,
     p_City LOCATION.City%TYPE,
@@ -213,6 +269,7 @@ EXCEPTION
 END InsertLocation;
 /
 
+-- Procedure to insert a warehouse type record
 CREATE OR REPLACE PROCEDURE InsertWarehouseType (
     p_Type_Name WAREHOUSE_TYPE.Type_Name%TYPE,
     p_Monthly_Rate WAREHOUSE_TYPE.Monthly_Rate%TYPE
@@ -235,6 +292,7 @@ EXCEPTION
 END InsertWarehouseType;
 /
 
+-- Procedure to insert a warehouse owner record
 CREATE OR REPLACE PROCEDURE InsertWarehouseOwner (
     p_Owner_Name WAREHOUSE_OWNER.Owner_Name%TYPE,
     p_Owner_Address WAREHOUSE_OWNER.Owner_Address%TYPE,
@@ -259,6 +317,7 @@ EXCEPTION
 END InsertWarehouseOwner;
 /
 
+-- Procedure to insert a warehouse record
 CREATE OR REPLACE PROCEDURE InsertWarehouse (
     p_Warehouse_Name WAREHOUSE.Warehouse_Name%TYPE,
     p_Address WAREHOUSE.Address%TYPE,
@@ -287,6 +346,7 @@ EXCEPTION
 END InsertWarehouse;
 /
 
+-- Procedure to insert a warehouse employee record
 CREATE OR REPLACE PROCEDURE InsertWarehouseEmployee (
     p_Warehouse_ID WAREHOUSE_EMPLOYEE.Warehouse_ID%TYPE,
     p_Employee_Name WAREHOUSE_EMPLOYEE.Employee_Name%TYPE,
@@ -314,6 +374,7 @@ EXCEPTION
 END InsertWarehouseEmployee;
 /
 
+-- Procedure to insert a lease record
 CREATE OR REPLACE PROCEDURE InsertLease (
     p_Warehouse_ID LEASE.Warehouse_ID%TYPE,
     p_Customer_ID LEASE.Customer_ID%TYPE,
@@ -340,6 +401,7 @@ EXCEPTION
 END InsertLease;
 /
 
+-- Procedure to insert a service request record
 CREATE OR REPLACE PROCEDURE InsertServiceRequest (
     p_Lease_Unit_ID SERVICE_REQUEST.Lease_Unit_ID%TYPE,
     p_Request_Desc SERVICE_REQUEST.Request_Desc%TYPE,
