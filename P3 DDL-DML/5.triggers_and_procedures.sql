@@ -1,11 +1,14 @@
+PURGE RECYCLEBIN;
+SET SERVEROUTPUT ON;
+
+
 -- Trigger to insert units into the UNIT table after a warehouse is created
-SET SERVEROUTPUT ON
-/
+
 CREATE OR REPLACE TRIGGER insert_warehouse_units_trigger
 AFTER INSERT ON WAREHOUSE
 FOR EACH ROW
 DECLARE
-    num_units NUMBER;
+    num_units WAREHOUSE.AVAILABLE_SPACE%TYPE;
 BEGIN
    
     num_units := :new.Available_Space;
@@ -18,16 +21,6 @@ END;
 
 /
 
--- Trigger to update the available space in the warehouse after a lease is created
-
-CREATE OR REPLACE TRIGGER insert_lease_units
-AFTER INSERT ON LEASE
-FOR EACH ROW
-BEGIN
-    -- Calling the procedure to update warehouse  and units
-    update_lease_information(:new.Warehouse_ID, :new.Units_leased, :new.Lease_ID);
-END;
-/
 
 
 CREATE OR REPLACE PROCEDURE update_lease_information(
@@ -60,7 +53,7 @@ BEGIN
             INSERT INTO LEASE_UNIT (Lease_Unit_ID, Unit_ID, Lease_ID)
             VALUES (Lease_Unit_ID_SEQ.NEXTVAL, unit_rec.UNIT_ID, p_lease_id);
             
-            -- Store the unit ID for debugging or further processing
+            -- unit ID for debugging
             l_unit_id := unit_rec.UNIT_ID;
             DBMS_OUTPUT.PUT_LINE('Inserted Lease_Unit record for Unit_ID: ' || l_unit_id);
         EXCEPTION
@@ -70,6 +63,17 @@ BEGIN
                 -- You can add additional error handling logic here
         END;
     END LOOP;
+END;
+/
+
+-- Trigger to update the available space in the warehouse after a lease is created
+
+CREATE OR REPLACE TRIGGER insert_lease_units
+AFTER INSERT ON LEASE
+FOR EACH ROW
+BEGIN
+    -- Calling the procedure to update warehouse  and units
+    update_lease_information(:new.Warehouse_ID, :new.Units_leased, :new.Lease_ID);
 END;
 /
 
@@ -158,4 +162,203 @@ EXCEPTION
         ROLLBACK;
         DBMS_OUTPUT.PUT_LINE('Error processing payment: ' || SQLERRM);
 END;
+/
+
+CREATE OR REPLACE PROCEDURE InsertCustomer (
+    p_First_Name CUSTOMER.First_Name%TYPE,
+    p_Last_Name CUSTOMER.Last_Name%TYPE,
+    p_Customer_Address CUSTOMER.Customer_Address%TYPE,
+    p_Email CUSTOMER.Email%TYPE,
+    p_Phone CUSTOMER.Phone%TYPE
+)
+IS
+BEGIN
+    INSERT INTO CUSTOMER (Customer_ID, First_Name, Last_Name, Customer_Address, Email, Phone)
+    VALUES (Customer_ID_SEQ.NEXTVAL, p_First_Name, p_Last_Name, p_Customer_Address, p_Email, p_Phone);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Customer '|| p_First_Name || ' ' || p_Last_Name || ' inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Customer '|| p_First_Name || ' ' || p_Last_Name || ' already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertCustomer;
+/
+
+CREATE OR REPLACE PROCEDURE InsertLocation (
+    p_ZIP LOCATION.ZIP%TYPE,
+    p_City LOCATION.City%TYPE,
+    p_State LOCATION.State%TYPE,
+    p_Country LOCATION.Country%TYPE
+)
+IS
+BEGIN
+    INSERT INTO LOCATION (Location_ID, ZIP, City, State, Country)
+    VALUES (Location_ID_SEQ.NEXTVAL, p_ZIP, p_City, p_State, p_Country);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Location with ZIP '|| p_ZIP || ' inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Location with ZIP '|| p_ZIP || ' already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertLocation;
+/
+
+CREATE OR REPLACE PROCEDURE InsertWarehouseType (
+    p_Type_Name WAREHOUSE_TYPE.Type_Name%TYPE,
+    p_Monthly_Rate WAREHOUSE_TYPE.Monthly_Rate%TYPE
+)
+IS
+BEGIN
+    INSERT INTO WAREHOUSE_TYPE (Warehouse_Type_ID, Type_Name, Monthly_Rate)
+    VALUES (Warehouse_Type_ID_SEQ.NEXTVAL, p_Type_Name, p_Monthly_Rate);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Warehouse Type '|| p_Type_Name || ' inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Warehouse Type '|| p_Type_Name || ' already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertWarehouseType;
+/
+
+CREATE OR REPLACE PROCEDURE InsertWarehouseOwner (
+    p_Owner_Name WAREHOUSE_OWNER.Owner_Name%TYPE,
+    p_Owner_Address WAREHOUSE_OWNER.Owner_Address%TYPE,
+    p_Email WAREHOUSE_OWNER.Email%TYPE,
+    p_Phone WAREHOUSE_OWNER.Phone%TYPE
+)
+IS
+BEGIN
+    INSERT INTO WAREHOUSE_OWNER (Owner_ID, Owner_Name, Owner_Address, Email, Phone)
+    VALUES (Owner_ID_SEQ.NEXTVAL, p_Owner_Name, p_Owner_Address, p_Email, p_Phone);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Warehouse Owner '|| p_Owner_Name || ' inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Warehouse Owner '|| p_Owner_Name || ' already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertWarehouseOwner;
+/
+
+CREATE OR REPLACE PROCEDURE InsertWarehouse (
+    p_Warehouse_Name WAREHOUSE.Warehouse_Name%TYPE,
+    p_Address WAREHOUSE.Address%TYPE,
+    p_Available_Space WAREHOUSE.Available_Space%TYPE,
+    p_Warehouse_Type_ID WAREHOUSE.Warehouse_Type_ID%TYPE,
+    p_Location_ID WAREHOUSE.Location_ID%TYPE,
+    p_Owner_ID WAREHOUSE.Owner_ID%TYPE,
+    p_Location_LAT WAREHOUSE.Location_LAT%TYPE,
+    p_Location_LONG WAREHOUSE.Location_LONG%TYPE
+)
+IS
+BEGIN
+    INSERT INTO WAREHOUSE (Warehouse_ID, Warehouse_Name, Address, Available_Space, Warehouse_Type_ID, Location_ID, Owner_ID, Location_LAT, Location_LONG)
+    VALUES (Warehouse_ID_SEQ.NEXTVAL, p_Warehouse_Name, p_Address, p_Available_Space, p_Warehouse_Type_ID, p_Location_ID, p_Owner_ID, p_Location_LAT, p_Location_LONG);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Warehouse '|| p_Warehouse_Name || ' inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Warehouse '|| p_Warehouse_Name || ' already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertWarehouse;
+/
+
+CREATE OR REPLACE PROCEDURE InsertWarehouseEmployee (
+    p_Warehouse_ID WAREHOUSE_EMPLOYEE.Warehouse_ID%TYPE,
+    p_Employee_Name WAREHOUSE_EMPLOYEE.Employee_Name%TYPE,
+    p_Address WAREHOUSE_EMPLOYEE.Address%TYPE,
+    p_Email WAREHOUSE_EMPLOYEE.Email%TYPE,
+    p_Phone WAREHOUSE_EMPLOYEE.Phone%TYPE,
+    p_Role WAREHOUSE_EMPLOYEE.Role%TYPE,
+    p_Salary WAREHOUSE_EMPLOYEE.Salary%TYPE
+)
+IS
+BEGIN
+    INSERT INTO WAREHOUSE_EMPLOYEE (Employee_ID, Warehouse_ID, Employee_Name, Address, Email, Phone, Role, Salary)
+    VALUES (Employee_ID_SEQ.NEXTVAL, p_Warehouse_ID, p_Employee_Name, p_Address, p_Email, p_Phone, p_Role, p_Salary);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Employee '|| p_Employee_Name || ' inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Employee '|| p_Employee_Name || ' already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertWarehouseEmployee;
+/
+
+CREATE OR REPLACE PROCEDURE InsertLease (
+    p_Warehouse_ID LEASE.Warehouse_ID%TYPE,
+    p_Customer_ID LEASE.Customer_ID%TYPE,
+    p_Start_Date DATE DEFAULT SYSDATE,
+    p_End_Date DATE DEFAULT ADD_MONTHS(SYSDATE, 1),
+    p_Lease_Amount LEASE.Lease_Amount%TYPE,
+    p_Units_leased LEASE.Units_leased%TYPE
+)
+IS
+BEGIN
+    INSERT INTO LEASE (Lease_ID, Warehouse_ID, Customer_ID, Start_Date, End_Date, Lease_Amount,  Balance_Amount, Units_leased)
+    VALUES (Lease_ID_SEQ.NEXTVAL, p_Warehouse_ID, p_Customer_ID, p_Start_Date, p_End_Date, p_Lease_Amount, p_Lease_Amount, p_Units_leased);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Lease inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Lease already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertLease;
+/
+
+CREATE OR REPLACE PROCEDURE InsertServiceRequest (
+    p_Lease_Unit_ID SERVICE_REQUEST.Lease_Unit_ID%TYPE,
+    p_Request_Desc SERVICE_REQUEST.Request_Desc%TYPE,
+    p_Customer_ID SERVICE_REQUEST.Customer_ID%TYPE
+)
+IS
+BEGIN
+    INSERT INTO SERVICE_REQUEST (Request_ID, Lease_Unit_ID, Request_Desc, Customer_ID)
+    VALUES (Service_Request_ID_SEQ.NEXTVAL, p_Lease_Unit_ID, p_Request_Desc, p_Customer_ID);
+    
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('Service request inserted successfully');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Service request already exists');
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Invalid input');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END InsertServiceRequest;
 /

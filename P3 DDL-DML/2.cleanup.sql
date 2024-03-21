@@ -361,11 +361,11 @@ BEGIN
     FROM
         user_views
     WHERE
-        view_name = 'LEASE_UNITS_AVAILABLE';
+        view_name = 'Lease_Units_Availability_Status';
 
     IF is_true > 0 THEN
-        dbms_output.put_line('View: LEASE_UNITS_AVAILABLE Already exists, dropping it');
-        EXECUTE IMMEDIATE 'DROP VIEW LEASE_UNITS_AVAILABLE';
+        dbms_output.put_line('View: Lease_Units_Availability_Status Already exists, dropping it');
+        EXECUTE IMMEDIATE 'DROP VIEW Lease_Units_Availability_Status';
     END IF;
 
     --Owners Revenue By Location View
@@ -375,11 +375,11 @@ BEGIN
     FROM
         user_views
     WHERE
-        view_name = 'OWNERS_REVENUE_BY_LOCATION';
+        view_name = 'OWNERS_REVENUE_BY_WAREHOUSE';
 
     IF is_true > 0 THEN
-        dbms_output.put_line('View: OWNERS_REVENUE_BY_LOCATION Already exists, dropping it');
-        EXECUTE IMMEDIATE 'DROP VIEW OWNERS_REVENUE_BY_LOCATION';
+        dbms_output.put_line('View: OWNERS_REVENUE_BY_WAREHOUSE Already exists, dropping it');
+        EXECUTE IMMEDIATE 'DROP VIEW OWNERS_REVENUE_BY_WAREHOUSE';
     END IF;
 
 
@@ -408,6 +408,34 @@ BEGIN
     IF is_true > 0 THEN
         dbms_output.put_line('View: customer_lease_details_view Already exists, dropping it');
         EXECUTE IMMEDIATE 'DROP VIEW customer_lease_details_view';
+    END IF;
+
+    -- customer_lease_details_view
+    SELECT
+        COUNT(*)
+    INTO is_true
+    FROM
+        user_views
+    WHERE
+        view_name = 'customer_lease_details_view';
+    
+    IF is_true > 0 THEN
+        dbms_output.put_line('View: customer_lease_details_view Already exists, dropping it');
+        EXECUTE IMMEDIATE 'DROP VIEW customer_lease_details_view';
+    END IF;
+
+    -- warehouse_availability_by_location
+    SELECT
+        COUNT(*)
+    INTO is_true
+    FROM
+        user_views
+    WHERE
+        view_name = 'warehouse_availability_by_location';
+    
+    IF is_true > 0 THEN
+        dbms_output.put_line('View: warehouse_availability_by_location Already exists, dropping it');
+        EXECUTE IMMEDIATE 'DROP VIEW warehouse_availability_by_location';
     END IF;
 
 END;
