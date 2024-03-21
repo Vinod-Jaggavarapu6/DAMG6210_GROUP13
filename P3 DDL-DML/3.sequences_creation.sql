@@ -1,7 +1,7 @@
 PURGE RECYCLEBIN;
 
 SET SERVEROUTPUT ON;
- 
+ --script to create sequences
 CREATE OR REPLACE PROCEDURE create_sequence(seqName IN VARCHAR2, startWith IN NUMBER) AS
 BEGIN
    -- Check if sequence exists
@@ -21,7 +21,7 @@ EXCEPTION
         END IF;
 END create_sequence;
 /
- 
+-- create required sequences
 BEGIN
    create_sequence('Customer_ID_SEQ', 1);
    create_sequence('Location_ID_SEQ', 1);
