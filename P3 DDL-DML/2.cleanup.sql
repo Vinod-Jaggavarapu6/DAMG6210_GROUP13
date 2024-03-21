@@ -1,7 +1,7 @@
 PURGE RECYCLEBIN;
-
+-- script to cleanup sequences, tables and views if they already exist
 SET SERVEROUTPUT ON;
-
+-- cleanup sequences
 DECLARE
     is_true NUMBER;
 BEGIN
@@ -169,7 +169,7 @@ END;
 
 
 
-
+--cleanup tables
 DECLARE
     is_true NUMBER;
 BEGIN
@@ -333,7 +333,7 @@ BEGIN
 END;
 /
 
-
+--cleanup views
 DECLARE 
     is_true NUMBER;
 BEGIN

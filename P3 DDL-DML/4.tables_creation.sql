@@ -1,10 +1,13 @@
 SET SERVEROUTPUT ON;
+--script to create tables 
 
 CREATE OR REPLACE PROCEDURE create_tables AS
     e_code NUMBER;
     e_msg VARCHAR2(255);
 BEGIN
+-- create table CUSTOMER
     BEGIN
+    
         EXECUTE IMMEDIATE 'CREATE TABLE CUSTOMER (
             Customer_ID VARCHAR2(50) DEFAULT Customer_ID_SEQ.NEXTVAL,   
             First_Name VARCHAR2(50) NOT NULL,
@@ -26,7 +29,7 @@ BEGIN
             dbms_output.put_line(SQLERRM);
         END IF;
     END;
-
+-- create table LOCATION
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE LOCATION (
             Location_ID VARCHAR2(50) DEFAULT Location_ID_SEQ.NEXTVAL,
@@ -45,7 +48,7 @@ BEGIN
             dbms_output.put_line(SQLERRM);
         END IF;
     END;
-
+-- create table WAREHOUSE_TYPE
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE WAREHOUSE_TYPE (
             Warehouse_Type_ID VARCHAR2(50) DEFAULT Warehouse_Type_ID_SEQ.NEXTVAL,
@@ -61,7 +64,7 @@ BEGIN
             dbms_output.put_line(SQLERRM);
         END IF;
     END;
-
+-- create table WAREHOUSE_OWNER
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE WAREHOUSE_OWNER (
             Owner_ID VARCHAR2(50) DEFAULT Owner_ID_SEQ.NEXTVAL,
@@ -83,7 +86,7 @@ BEGIN
         END IF;
             
     END;
-
+-- create table WAREHOUSE
     BEGIN 
         EXECUTE IMMEDIATE 'CREATE TABLE WAREHOUSE (
             Warehouse_ID VARCHAR2(50) DEFAULT Warehouse_ID_SEQ.NEXTVAL,
@@ -108,7 +111,7 @@ BEGIN
             dbms_output.put_line(SQLERRM);
         END IF;
     END;
-    
+-- create table WAREHOUSE_EMPLOYEE
     BEGIN 
         EXECUTE IMMEDIATE 'CREATE TABLE WAREHOUSE_EMPLOYEE (
             Employee_ID VARCHAR2(50) DEFAULT Employee_ID_SEQ.NEXTVAL,
@@ -134,7 +137,7 @@ BEGIN
         END IF;
             
     END;
-
+-- create table UNIT
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE UNIT (
             Unit_ID VARCHAR2(50) DEFAULT Unit_ID_SEQ.NEXTVAL,
@@ -153,7 +156,7 @@ BEGIN
         END IF;
             
     END;
-
+-- create table LEASE
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE LEASE (
             Lease_ID VARCHAR2(50) DEFAULT Lease_ID_SEQ.NEXTVAL,
@@ -180,7 +183,7 @@ BEGIN
         END IF;
             
     END;
-    
+   -- create table LEASE_UNIT 
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE LEASE_UNIT (
             Lease_Unit_ID VARCHAR2(100) DEFAULT Lease_Unit_ID_SEQ.NEXTVAL,
@@ -199,7 +202,7 @@ BEGIN
         END IF;
             
     END;
-    
+      -- create table PAYMENT  
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE PAYMENT (
             Payment_ID VARCHAR2(50) DEFAULT Payment_ID_SEQ.NEXTVAL,
@@ -220,7 +223,7 @@ BEGIN
         END IF;
             
     END;
-    
+       -- create table SERVICE_REQUEST   
     BEGIN
         EXECUTE IMMEDIATE 'CREATE TABLE SERVICE_REQUEST (
             Request_ID VARCHAR2(50) DEFAULT Service_Request_ID_SEQ.NEXTVAL,
